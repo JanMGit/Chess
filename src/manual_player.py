@@ -7,7 +7,7 @@ Created on Fri Dec 13 23:54:45 2019
 import numpy as np
 import convenience
 
-def make_move(board, colour):
+def make_move(board, colour, castling):
     if colour=="white":
         inp = input("Make your move, white player: ")
         return np.array(list(inp), dtype=int).reshape((2,2))

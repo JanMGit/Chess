@@ -15,30 +15,81 @@ def possible_moves(board, can_castle_left, can_castle_right):
     given the board and castling_booleans.
     '''
     move_list = []
-    #all moves except castling
     for x in range(8):
         for y in range(8):
-               #Find type
-               piece = board[x,y]
-               
-               #Pawn
-               if piece==1:
-                   moves = [np.array([[x,y],[x-1,y]]), np.array([[x,y],[x-2,y]]),
-                            np.array([[x,y],[x-1,y-1]]), np.array([[x,y],[x-1,y+1]])]
-                   for move in moves:
-                       if check_move_validity(move): move_list.append(move)
-               
-               
-    #castling
-    move = np.array([[7,4],[7,2]])
-    if check_move_validity(move, board, can_castle_left, can_castle_right): move_list.append(move)
-    move = np.array([[7,4],[7,6]])
-    if check_move_validity(move, board, can_castle_left, can_castle_right): move_list.append(move)
+            #Find type
+            piece = board[x,y]
+            if np.sign(piece)!=1: continue
+            
+            #Pawn
+            elif piece==1:
+                moves = [np.array([[x,y],[x-1,y]]), np.array([[x,y],[x-2,y]]),
+                         np.array([[x,y],[x-1,y-1]]), np.array([[x,y],[x-1,y+1]])]
+                for move in moves:
+                    if check_move_validity(move, board): move_list.append(move)
+            
+            #Rook
+            elif piece==2:
+                for direction in [np.array([1,0]), np.array([-1,0]), np.array([0,1]), np.array([0,-1])]:
+                    move = np.array([[x,y],[x,y]])
+                    for i in range(1, 8):
+                        move[1] += i*direction
+                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
+                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                        else: break
+            
+            #Knight
+            elif piece==3:
+                new_positions = [(x+1,y+2), (x+2,y+1), (x+1,y-2), (x+2,y-1), 
+                                 (x-1,y+2), (x-2,y+1), (x-1,y-2), (x-2,y-1)]
+                for new_pos in new_positions:
+                    if (not 0<=new_pos[0]<=7) or (not 0<=new_pos[1]<=7): continue
+                    if np.sign(board[new_pos])!=1: move_list.append(np.array([[x, y],new_pos]))
+            
+            #Bishop
+            elif piece==4:
+                for direction in [np.array([1,1]), np.array([1,-1]), np.array([-1,1]), np.array([-1,-1])]:
+                    move = np.array([[x,y],[x,y]])
+                    for i in range(1, 8):
+                        move[1] += i*direction
+                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
+                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                        else: break
+            
+            #Queen
+            elif piece==5:
+                for direction in [np.array([1,0]), np.array([-1,0]), np.array([0,1]), np.array([0,-1])]:
+                    move = np.array([[x,y],[x,y]])
+                    for i in range(1, 8):
+                        move[1] += i*direction
+                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
+                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                        else: break
+                for direction in [np.array([1,1]), np.array([1,-1]), np.array([-1,1]), np.array([-1,-1])]:
+                    move = np.array([[x,y],[x,y]])
+                    for i in range(1, 8):
+                        move[1] += i*direction
+                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
+                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                        else: break
+            
+            #King
+            elif piece==6:
+                for i in range(-1,2):
+                    for j in range(-1,2):
+                        if (not 0<=(x+i)<=7) or (not 0<=(y+j)<=7): continue
+                        if board[x+i, y+j]!=1: move_list.append(np.array([[x,y],[x+i, y+j]]))         
+                #castling
+                if x==7 and y==4:
+                    move = np.array([[7,4],[7,2]])
+                    if check_move_validity(move, board, can_castle_left, can_castle_right): move_list.append(move)
+                    move = np.array([[7,4],[7,6]])
+                    if check_move_validity(move, board, can_castle_left, can_castle_right): move_list.append(move)
     
     return move_list
     
 
-def check_move_validity(move, board, can_castle_left, can_castle_right):
+def check_move_validity(move, board, can_castle_left=False, can_castle_right=False):
     '''
     Checks if the *white* (read: active) player is able to perform the given move on the given board.
     can_castle_left, can_castle_right are booleans that determine whether the player is

@@ -66,7 +66,6 @@ class Board():
         self.update_array()
         #If the piece that was moved is pawn now on the other side, promote it
         self.board[tuple(move.coords[1])].promote(move)
-        self.update_array()
         
         
     def check_win_condition(self, colour):
