@@ -21,6 +21,9 @@ class Board():
         self.white_can_castle_right = True
         self.black_can_castle_left = True
         self.black_can_castle_right = True
+        self.array = self.board.astype(int)
+        self.n_rounds = 0
+        self.n_half_turn = 0
     
     def __str__(self): 
         string = " | 0| 1| 2| 3| 4| 5| 6| 7|\n"+str(self.board.astype(str)).replace("'","")
@@ -30,8 +33,16 @@ class Board():
             string = string[0:28*(i+1)] + letter_list[i] + string[28*(i+1):]
         return string
     
+    def update_array(self):
+        self.array = self.board.astype(int)
+    
     def make_move(self, move):
-        move.check_viability(self)
+        move.check_validity(self)
+        #Increase count for turns where no pawn moved or piece was obliterated
+        if self.board[tuple(move.coords[0])].type==1 or (self.board[tuple(move.coords[1])].type)!=0:
+            self.n_half_turn = 0
+        else:
+            self.n_half_turn += 1
         #Check if castling and move the rook if True
         if abs(self.board[tuple(move.coords[0])].type)==6 and abs(move.coords[1,1]-move.coords[0,1])==2:
             if move.colour=="white":
@@ -51,9 +62,13 @@ class Board():
         #Movement
         self.board[tuple(move.coords[1])] = self.board[tuple(move.coords[0])]
         self.board[tuple(move.coords[0])] = Piece(0)
+        #Update array
+        self.update_array()
         #If the piece that was moved is pawn now on the other side, promote it
         self.board[tuple(move.coords[1])].promote(move)
-    
+        self.update_array()
+        
+        
     def check_win_condition(self, colour):
         if colour=="white": dead_king = -6
         if colour=="black": dead_king = 6

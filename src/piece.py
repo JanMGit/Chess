@@ -14,6 +14,9 @@ class Piece():
         if self.type==0: return "__"
         else: return ("+" if self.type>0 else "") + str(self.type)
     
+    def __int__(self):
+        return self.type
+    
     def promote(self, move):
         '''
         Promotes a piece (a pawn) if it reaches the other side.
@@ -63,11 +66,11 @@ class Piece():
         
         #Rook
         #Castling Mechanics
-        if old_pos[0]==7 and old_pos[1]==0 and colour=="white": board.white_can_castle_left = False
-        elif old_pos[0]==7 and old_pos[1]==7 and colour=="white": board.white_can_castle_right = False
-        elif old_pos[0]==0 and old_pos[1]==0 and colour=="black": board.black_can_castle_left = False
-        elif old_pos[0]==0 and old_pos[1]==7 and colour=="black": board.black_can_castle_right = False
         if abs(self.type)==2:
+            if old_pos[0]==7 and old_pos[1]==0 and colour=="white": board.white_can_castle_left = False
+            elif old_pos[0]==7 and old_pos[1]==7 and colour=="white": board.white_can_castle_right = False
+            elif old_pos[0]==0 and old_pos[1]==0 and colour=="black": board.black_can_castle_left = False
+            elif old_pos[0]==0 and old_pos[1]==7 and colour=="black": board.black_can_castle_right = False
             if coords_diff[0]==0:
                 for i in range(1, abs(coords_diff[1])):
                     if board.board[old_pos[0], old_pos[1]+i*np.sign(coords_diff[1])].type!=0: return False
@@ -154,3 +157,7 @@ class Piece():
                     board.black_can_castle_right = False
                 return True
             else: return False
+        
+        else:
+            print("Warning: Piece type could not be identified.")
+            return False
