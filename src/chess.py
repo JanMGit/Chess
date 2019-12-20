@@ -23,6 +23,7 @@ print(b)
 board_history.append(b)
 
 while not won:
+    print("fen: " + convenience.board_to_fen(b, 'w'))
     #Determine and perform white move with module imported as white player
     castling = (b.white_can_castle_left, b.white_can_castle_right, b.black_can_castle_left, b.black_can_castle_right)
     move_white = Move(player_white.make_move(b.array, colour="white", castling=castling), colour="white")
@@ -46,7 +47,7 @@ while not won:
     #Check for black player win
     won = b.check_win_condition(colour="black")
     b.n_rounds += 1
-
+    
 if won==1: print("White player won!")
 elif won==-1: print("Black player won!")
 print("Game lasted {} rounds.".format(b.n_rounds))

@@ -226,3 +226,52 @@ def flip_move(move):
     (You won't need this.) Flips a move to the other side.
     '''
     return np.abs(np.array([[7,0],[7,0]]) - move)
+
+def to_fen(board_arr, castle_left, castle_right, castle_other_left, castle_other_right, current_player='w', half_turns=0, turn_count=1):
+    if(type(current_player) == int):
+        if(current_player==-1):
+            current_player='b'
+        else:
+            current_player='w'
+    else:
+        if(current_player not in ['w', 'b']):
+            raise ValueError(str(current_player) + " is not a valid player")
+    
+    #board layout
+    characters =["p", "r", "n", "b", "q", "k"]
+    fen = ""
+    for row in board_arr:
+        count = 0
+        for piece in row:
+            if(piece!=0):
+                fen += (str(count) if count>0 else "") + (characters[abs(piece)-1] if piece < 0 else characters[piece-1].upper())
+                count = 0
+            else:
+                count += 1        
+        if(count == 0):
+            fen += "/"
+        else:
+            fen += str(count) + "/"
+    fen = fen[:-1] + " "
+    
+    fen += current_player + " "
+    
+    #castling availability
+    if(castle_left or castle_right or castle_other_left or castle_other_right):
+        if(castle_right): fen += ("K" if current_player=='w' else "k")
+        if(castle_left): fen += ("Q" if current_player=='w' else "q")
+        if(castle_other_right): fen += ("k" if current_player=="w" else "K")
+        if(castle_other_left): fen += ("q" if current_player=="w" else "Q")
+    else:
+        fen += "-"
+        
+    fen += " - " #en passant target, we don't do that here
+    fen += "{:d} {:d}".format(half_turns, turn_count)
+    return fen
+
+def board_to_fen(board, current_player):
+    if(current_player=='w' or current_player==1):
+        return to_fen(board.array, board.white_can_castle_left, board.white_can_castle_right, board.black_can_castle_left, board.black_can_castle_right, current_player='w', half_turns=board.n_half_turn, turn_count=board.n_rounds)
+    elif(current_player=='b' or current_player==-1):
+        return to_fen(board.array, board.black_can_castle_left, board.black_can_castle_right, board.white_can_castle_left, board.white_can_castle_right, current_player='b', half_turns=board.n_half_turn, turn_count=board.n_rounds)   
+        
