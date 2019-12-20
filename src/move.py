@@ -17,11 +17,18 @@ class Move():
     def check_validity(self, board, silent=True):
         piece = board.board[tuple(self.coords[0])]
         if self.colour=="white" and np.sign(piece.type)!=1:
-            raise MoveValidityError("\nWhite player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords))
+             print("WARNING\nILLEGAL MOVE DETECTED but game keeps playing."
+                   +"\nWhite player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(move_black.coords)
+                   +"\nWARNING")
+#            raise MoveValidityError("\nWhite player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords))
         elif self.colour=="black" and np.sign(piece.type)!=-1:
-            raise MoveValidityError("\nBlack player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords)) 
+             print("WARNING\nILLEGAL MOVE DETECTED but game keeps playing."
+                   +"\nBlack player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(move_black.coords)
+                   +"\nWARNING")
+#            raise MoveValidityError("\nBlack player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords)) 
         if piece.movable(self, board):
             if silent: pass
             else: print("Move is fine.")
         else:
-            raise MoveValidityError("\nILLEGAL MOVE DETECTED:\n"+str(self.coords))
+            print("WARNING\nILLEGAL MOVE DETECTED but game keeps playing.\nWARNING")
+#            raise MoveValidityError("\nILLEGAL MOVE DETECTED:\n"+str(self.coords))
