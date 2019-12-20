@@ -18,12 +18,12 @@ class Move():
         piece = board.board[tuple(self.coords[0])]
         if self.colour=="white" and np.sign(piece.type)!=1:
              print("WARNING\nILLEGAL MOVE DETECTED but game keeps playing."
-                   +"\nWhite player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(move_black.coords)
+                   +"\nWhite player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords)
                    +"\nWARNING")
 #            raise MoveValidityError("\nWhite player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords))
         elif self.colour=="black" and np.sign(piece.type)!=-1:
              print("WARNING\nILLEGAL MOVE DETECTED but game keeps playing."
-                   +"\nBlack player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(move_black.coords)
+                   +"\nBlack player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords)
                    +"\nWARNING")
 #            raise MoveValidityError("\nBlack player: The  piece you are trying to grab is not yours or nonexistent. Move:\n"+str(self.coords)) 
         if piece.movable(self, board):
