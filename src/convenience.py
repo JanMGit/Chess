@@ -32,10 +32,14 @@ def possible_moves(board, can_castle_left, can_castle_right):
             elif piece==2:
                 for direction in [np.array([1,0]), np.array([-1,0]), np.array([0,1]), np.array([0,-1])]:
                     move = np.array([[x,y],[x,y]])
-                    for i in range(1, 8):
-                        move[1] += i*direction
-                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
-                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                    move[1] += direction
+                    while (0<=move[1]).all() and (move[1]<=7).all():
+                        if board[tuple(move[1])]==0:
+                            move_list.append(move.copy())
+                            move[1] += direction
+                        elif np.sign(board[tuple(move[1])])==-1:
+                            move_list.append(move.copy())
+                            break
                         else: break
             
             #Knight
@@ -50,35 +54,49 @@ def possible_moves(board, can_castle_left, can_castle_right):
             elif piece==4:
                 for direction in [np.array([1,1]), np.array([1,-1]), np.array([-1,1]), np.array([-1,-1])]:
                     move = np.array([[x,y],[x,y]])
-                    for i in range(1, 8):
-                        move[1] += i*direction
-                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
-                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                    move[1] += direction
+                    while (0<=move[1]).all() and (move[1]<=7).all():
+                        if board[tuple(move[1])]==0:
+                            move_list.append(move.copy())
+                            move[1] += direction
+                        elif np.sign(board[tuple(move[1])])==-1:
+                            move_list.append(move.copy())
+                            break
                         else: break
+                    
             
             #Queen
             elif piece==5:
                 for direction in [np.array([1,0]), np.array([-1,0]), np.array([0,1]), np.array([0,-1])]:
                     move = np.array([[x,y],[x,y]])
-                    for i in range(1, 8):
-                        move[1] += i*direction
-                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
-                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                    move[1] += direction
+                    while (0<=move[1]).all() and (move[1]<=7).all():
+                        if board[tuple(move[1])]==0:
+                            move_list.append(move.copy())
+                            move[1] += direction
+                        elif np.sign(board[tuple(move[1])])==-1:
+                            move_list.append(move.copy())
+                            break
                         else: break
                 for direction in [np.array([1,1]), np.array([1,-1]), np.array([-1,1]), np.array([-1,-1])]:
                     move = np.array([[x,y],[x,y]])
-                    for i in range(1, 8):
-                        move[1] += i*direction
-                        if (not 0<=move[1][0]<=7) or (not 0<=move[1][1]<=7): break
-                        if np.sign(board[tuple(move[1])])!=1: move_list.append(move)
+                    move[1] += direction
+                    while (0<=move[1]).all() and (move[1]<=7).all():
+                        if board[tuple(move[1])]==0:
+                            move_list.append(move.copy())
+                            move[1] += direction
+                        elif np.sign(board[tuple(move[1])])==-1:
+                            move_list.append(move.copy())
+                            break
                         else: break
             
             #King
             elif piece==6:
                 for i in range(-1,2):
                     for j in range(-1,2):
-                        if (not 0<=(x+i)<=7) or (not 0<=(y+j)<=7): continue
-                        if board[x+i, y+j]!=1: move_list.append(np.array([[x,y],[x+i, y+j]]))         
+                        if i==0 and j==0: continue
+                        elif (not 0<=(x+i)<=7) or (not 0<=(y+j)<=7): continue
+                        elif np.sign(board[x+i, y+j])!=1: move_list.append(np.array([[x,y],[x+i, y+j]]))         
                 #castling
                 if x==7 and y==4:
                     move = np.array([[7,4],[7,2]])
