@@ -119,6 +119,9 @@ class Piece():
             if abs(coords_diff[0])==0 and abs(coords_diff[1])==2:
                 if colour=="white":
                     if coords_diff[1]==-2 and board.white_can_castle_left:
+                        #Check if rook is alive
+                        if board.board[7,0].type!=2: return False
+                        #Check if fields between rook and king are empty
                         for i in (1,2,3):
                             if board.board[7,i].type!=0: return False
                         else:
@@ -126,6 +129,9 @@ class Piece():
                             board.white_can_castle_right = False
                             return True
                     elif coords_diff[1]==2 and board.white_can_castle_right:
+                        #Check if rook is alive
+                        if board.board[7,7].type!=2: return False
+                        #Check if fields between rook and king are empty
                         for i in (5,6):
                             if board.board[7,i].type!=0: return False
                         else:
@@ -134,6 +140,9 @@ class Piece():
                             return True
                 if colour=="black":
                     if coords_diff[1]==-2 and board.black_can_castle_left:
+                        #Check if rook is alive
+                        if board.board[0,0].type!=-2: return False
+                        #Check if fields between rook and king are empty
                         for i in (1,2,3):
                             if board.board[0,i].type!=0: return False
                         else:
@@ -141,6 +150,9 @@ class Piece():
                             board.black_can_castle_right = False
                             return True
                     elif coords_diff[1]==2 and board.black_can_castle_right:
+                        #Check if rook is alive
+                        if board.board[0,7].type!=-2: return False
+                        #Check if fields between rook and king are empty
                         for i in (5,6):
                             if board.board[0,i].type!=0: return False
                         else:

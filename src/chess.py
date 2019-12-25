@@ -8,19 +8,22 @@ Created on Fri Dec 13 13:21:53 2019
 from board import Board
 from move import Move
 import convenience
+import pickle
+import copy
 
 '''
 Change those to imports to change the program that plays
 '''
-import manual_player as player_white
+import example_player as player_white
 import example_player as player_black
-
+white_name = "player1"
+black_name = "player2"
 
 b = Board()
 won = 0
 board_history = []
 print(b)
-board_history.append(b)
+board_history.append(copy.deepcopy(b))
 
 while not won:
     print("fen: " + convenience.board_to_fen(b, 'w'))
@@ -32,7 +35,7 @@ while not won:
     print("White player's move:", move_white.coords.flatten())
     print(b)
     #Check for white player win
-    board_history.append(b)
+    board_history.append(copy.deepcopy(b))
     won = b.check_win_condition(colour="white")
     if won != 0: break
     
@@ -43,7 +46,7 @@ while not won:
     #Output
     print("Black player's move:", move_black.coords.flatten())
     print(b)
-    board_history.append(b)
+    board_history.append(copy.deepcopy(b))
     #Check for black player win
     won = b.check_win_condition(colour="black")
     b.n_rounds += 1
@@ -51,3 +54,7 @@ while not won:
 if won==1: print("White player won!")
 elif won==-1: print("Black player won!")
 print("Game lasted {} rounds.".format(b.n_rounds))
+
+file = white_name+"_vs_"+black_name+".obj"
+with open(file,"wb") as filehandler:
+    pickle.dump(board_history, filehandler)
