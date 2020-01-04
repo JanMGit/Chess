@@ -14,7 +14,7 @@ runs = 100
 times = []
 wins = []
 for i in range(runs):
-    result = chess.play(p1, p2, printing=False)
+    result = chess.play(p1, p2, printing=False, n_move_limit=50)
     times.append(result[0])
     wins.append(result[1])
     

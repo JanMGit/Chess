@@ -38,7 +38,7 @@ class Board():
     
     def make_move(self, move):
         move.check_validity(self)
-        #Increase count for turns where no pawn moved or piece was obliterated
+        #Increase count for turns where no pawn moved or piece was obliterated or set it to zero
         if abs(self.board[tuple(move.coords[0])].type)==1 or (self.board[tuple(move.coords[1])].type)!=0:
             self.n_half_turn = 0
         else:

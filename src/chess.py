@@ -13,7 +13,7 @@ import copy
 from time import time
 
 def play(player_white_ai, player_black_ai, printing=True, saving_match_history=False,
-         white_name="player1", black_name="player2"):
+         white_name="player1", black_name="player2", n_move_limit=1e3):
     
     b = Board()
     won = 0
@@ -37,10 +37,12 @@ def play(player_white_ai, player_black_ai, printing=True, saving_match_history=F
         if(printing):
             print("White player's move:", move_white.coords.flatten())
             print(b)
-        #Check for white player win
         if saving_match_history: board_history.append(copy.deepcopy(b))
+        #Check for white player win
         won = b.check_win_condition(colour="white")
-        if won != 0: break
+        if won!=0: break
+        #Check if move limit is reached and end in draw
+        if b.n_half_turn >= n_move_limit: break
         
         #Determine and perform black move with module imported as black player
         castling = (b.black_can_castle_left, b.black_can_castle_right, b.white_can_castle_left, b.white_can_castle_right)
@@ -55,10 +57,14 @@ def play(player_white_ai, player_black_ai, printing=True, saving_match_history=F
         if saving_match_history: board_history.append(copy.deepcopy(b))
         #Check for black player win
         won = b.check_win_condition(colour="black")
+        #Check if move limit is reached and end in draw
+        if b.n_half_turn >= n_move_limit: break
+    
         b.n_rounds += 1
         
     if won==1: print("White player won!")
     elif won==-1: print("Black player won!")
+    elif won==0: print("Game ended in a draw.")
     print("Game lasted {} rounds.".format(b.n_rounds))
     
     if saving_match_history:
@@ -77,5 +83,6 @@ if __name__=="__main__":
     white_name = player_white.__name__
     black_name = player_black.__name__
     times = play(player_white.make_move, player_black.make_move, printing=True,
-                 saving_match_history=True, white_name=white_name, black_name=black_name)[0]
+                 saving_match_history=True, white_name=white_name,
+                 black_name=black_name, n_move_limit=50)[0]
     print("White player took {:.3g} s, black player took {:.3g} s".format(*times))
