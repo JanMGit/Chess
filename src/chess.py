@@ -62,7 +62,7 @@ def play(player_white_ai, player_black_ai, printing=True, saving_match_history=F
     print("Game lasted {} rounds.".format(b.n_rounds))
     
     if saving_match_history:
-        file = white_name+"_vs_"+black_name+".obj"
+        file = "matches/"+white_name+"_vs_"+black_name+".obj"
         with open(file,"wb") as filehandler:
             pickle.dump(board_history, filehandler)
     return times, won
