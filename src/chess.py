@@ -11,20 +11,17 @@ import convenience
 import pickle
 import copy
 from time import time
-'''
-Change those to imports to change the program that plays
-'''
 
-def play(player_white_ai, player_black_ai, printing=True):
-    white_name = "player1"
-    black_name = "player2"
+def play(player_white_ai, player_black_ai, printing=True, saving_match_history=False,
+         white_name="player1", black_name="player2"):
     
     b = Board()
     won = 0
-    board_history = []
+    if saving_match_history:
+        board_history = []
+        board_history.append(copy.deepcopy(b))
     if(printing):
         print(b)
-    board_history.append(copy.deepcopy(b))
     times = [0,0]
     
     while not won:
@@ -41,7 +38,7 @@ def play(player_white_ai, player_black_ai, printing=True):
             print("White player's move:", move_white.coords.flatten())
             print(b)
         #Check for white player win
-        board_history.append(copy.deepcopy(b))
+        if saving_match_history: board_history.append(copy.deepcopy(b))
         won = b.check_win_condition(colour="white")
         if won != 0: break
         
@@ -55,7 +52,7 @@ def play(player_white_ai, player_black_ai, printing=True):
         if(printing):
             print("Black player's move:", move_black.coords.flatten())
             print(b)
-        board_history.append(copy.deepcopy(b))
+        if saving_match_history: board_history.append(copy.deepcopy(b))
         #Check for black player win
         won = b.check_win_condition(colour="black")
         b.n_rounds += 1
@@ -64,13 +61,21 @@ def play(player_white_ai, player_black_ai, printing=True):
     elif won==-1: print("Black player won!")
     print("Game lasted {} rounds.".format(b.n_rounds))
     
-    file = white_name+"_vs_"+black_name+".obj"
-    with open(file,"wb") as filehandler:
-        pickle.dump(board_history, filehandler)
+    if saving_match_history:
+        file = white_name+"_vs_"+black_name+".obj"
+        with open(file,"wb") as filehandler:
+            pickle.dump(board_history, filehandler)
     return times, won
         
 if __name__=="__main__":
+    '''
+    Change those to imports to change the program that plays
+    '''
     import example_player as player_white
-    import joepsai_core_v1 as player_black
-    times = play(player_white.make_move, player_black.make_move)[0]
+    import example_player as player_black
+
+    white_name = player_white.__name__
+    black_name = player_black.__name__
+    times = play(player_white.make_move, player_black.make_move, printing=True,
+                 saving_match_history=True, white_name=white_name, black_name=black_name)[0]
     print("White player took {:.3g} s, black player took {:.3g} s".format(*times))
